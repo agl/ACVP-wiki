@@ -20,7 +20,7 @@ The architecture includes two application servers (ACVP Proxy and TOTP). The app
 An alternative high-level architecture of an enterprise client architecture is shown below. ![High-Level Architecture](https://github.com/usnistgov/ACVP/blob/master/Images/AuthArchitecture-client-app.svg). 
 
 
-The architecture includes one application server (TOTP server), one client machine with the client ACVP application. The TOTP server and client machine shall be deployed behind a firewall. The TOTP server shall be accessible internally only with respect to the enterprise firewall. The primary function of the TOTP server is to house the client TOTP key K (see RFC 6238) assigned to the enterprise for accessing ACVTS and compute the current OTP upon requests from the ACVP Proxy for completing the two-factor authentication process.   
+The architecture includes one application server (TOTP server), one client machine with the client ACVP application. The TOTP server and client machine shall be deployed behind a firewall. The TOTP server shall be accessible internally only with respect to the enterprise firewall. The primary function of the TOTP server is to house the client TOTP key K (see [RFC 6238](https://tools.ietf.org/html/rfc6238)) assigned to the enterprise for accessing ACVTS and compute the current OTP upon requests from the ACVP Proxy for completing the two-factor authentication process.   
 
 Each participating partner to ACVTS that implements this architecture shall obtain a Base64-encoded client TOTP key upon completing a successful National Voluntary Laboratory Accreditation Program (NVLAP) accreditation. 
 
