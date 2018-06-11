@@ -28,12 +28,12 @@ Each participating partner to ACVTS that implements this architecture shall obta
 
 While the TOTP authentication is described in  [RFC 6238](https://tools.ietf.org/html/rfc6238) and  [RFC 4226](https://tools.ietf.org/html/rfc4226), there are several parameters that are important to specify to allow clients to correctly authenticate. 
 * The T0 (time) offset from UNIX time shall be zero. 
-* Synchronization: the server shall use the Network Time Protocol (NTP) to synchronize with the NIST time server at time.nist.gov. It is expected that clients use a corresponding methodology to prevent clock skew. 
-* The time step (or X as specified in RFC 6238) shall be 30 seconds. 
-* Cryptographic primitives: HMAC-SHA-256 based on SHA-256 shall be used in this implementation, a valid option per RFC 6238. Please refer to Appendices A and B in RFC 6238 for details on how to compute the TOTP value with these cryptographic primitives and validate the correctness of your client implementation.  
-* TOTP length: the number of digits produced based on RFC 4226 shall be 8 digits. Note that any leading zeros in the TOTP value shall be preserved up to the 8-digit length.
+* Synchronization: the server shall use the Network Time Protocol ([NTP](http://www.ntp.org/ntpfaq/NTP-s-def.htm)) to synchronize with the NIST time server at **time.nist.gov**. It is expected that clients use a corresponding methodology to prevent clock skew. 
+* The time step (or X as specified in [RFC 6238](https://tools.ietf.org/html/rfc6238)) shall be 30 seconds. 
+* Cryptographic primitives: HMAC-SHA-256 based on SHA-256 shall be used in this implementation, a valid option per [RFC 6238](https://tools.ietf.org/html/rfc6238). Please refer to Appendices A and B in [RFC 6238](https://tools.ietf.org/html/rfc6238) for details on how to compute the TOTP value with these cryptographic primitives and validate the correctness of your client implementation.  
+* TOTP length: the number of digits produced based on [RFC 4226](https://tools.ietf.org/html/rfc4226) shall be 8 digits. Note that any leading zeros in the TOTP value shall be preserved up to the 8-digit length.
 
-As part of the authorization process there is the option on the part of the server to allow a “window,” checking OTP values a specified number of steps either forward or backward from the current step, to handle both network delays and possible clock skew. RFC 6238 recommends checking one step backward to accommodate any network delay and provides no specific guidance on a window for a clock skew other than to recommend this window remain small. There will be a small window, likely one step backward and forward, but this value may change over time based on security and operational considerations.
+As part of the authorization process there is the option on the part of the server to allow a “window,” checking OTP values a specified number of steps either forward or backward from the current step, to handle both network delays and possible clock skew. [RFC 6238](https://tools.ietf.org/html/rfc6238) recommends checking one step backward to accommodate any network delay and provides no specific guidance on a window for a clock skew other than to recommend this window remain small. There will be a small window, likely one step backward and forward, but this value may change over time based on security and operational considerations.
 
 ### Two-factor authentication flows
 The ACVTS server has a dedicated RESTful entry point for client authentication: https://demo.acvts.nist.gov/acvp/validation/acvp/login. The corresponding two-factor authentication flow is shown in the figure below. Note that the successful first-factor authentication is a prerequisite for performing the second factor authentication with TOTP. Note also that this workflow utilizes two protocols: Transmission Control Protocol and Internet Protocol (TCP/IP) and Hypertext Transfer Protocol Secure (HTTPS). ![Authentication flows](https://github.com/usnistgov/ACVP/blob/master/Images/2-factor-auth-proxy-server.svg). 
@@ -46,8 +46,7 @@ Successful client authentication is required for performing any work with the AC
 
 The workflow authorization flows are shown in the figure below. ![Authorization flows](https://github.com/usnistgov/ACVP/blob/master/Images/authorization-flows.png) 
 
-Note that all HTTP requests listed are over TLS. Note also that to re-authenticate in this context when the JWT is expired the client needs to submit only the new OTP value using the TLS session previously established. In other words, the client would need to perform only the actions shown in Figure 4 that correspond to the second factor authentication and will reuse the 2-way TLS session as a first factor authentication as long as the TLS session is active.   
-The basic process will flow as follows. 
+Note that all HTTP requests listed are over TLS. Note also that to re-authenticate in this context when the JWT is expired the client needs to submit only the new OTP value using the TLS session previously established. In other words, the client would need to perform only the actions shown in section "Two-factor authentication flows" above that correspond to the second factor authentication and reuse the 2-way TLS session as a first factor authentication as long as the TLS session is active. The basic process flows as follows. 
 
 1. POST the following to **/validation/acvp/login** <br/>
 ```
