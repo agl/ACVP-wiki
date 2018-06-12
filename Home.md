@@ -70,7 +70,7 @@ Authorization: Bearer `<accessToken>`
 4.  Receive the response
 ```
 [
-   {"acvVersion": "0.4"},
+   {"acvVersion": "0.x"},
    {"capabilityResponse": {"vectorSets": [{"vsId": <VECTOR SET ID>}]},
     "testSession": {"testId": <TEST SESSION ID>},
     "accessToken": "<ACCESS TOKEN>"}
