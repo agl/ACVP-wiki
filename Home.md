@@ -4,9 +4,11 @@ The goal for this project is to provide a messaging protocol that can be used wi
 
 We are working actively on this exciting project and people are starting to [notice]( http://www.theregister.co.uk/2016/08/01/cisco_nist_want_to_help_devs_escape_the_vulnvalidation_trap/). Thanks!
 
-# Accessing the demo server
+# Credentials for accessing the demo server
 
-See these [detailed instructions](https://github.com/usnistgov/ACVP) first for obtaining TLS credentials.
+To access the demo server one needs a TLS credential and a one-time password (OTP). 
+
+See these [detailed instructions](https://github.com/usnistgov/ACVP#obtaining-tls-credentials) first for obtaining TLS credentials.
 
 ## Second-Factor Authentication and Authorization Schema for Accessing and Working with the NIST Automated Cryptographic Validation Services 
 
