@@ -38,7 +38,7 @@ While the TOTP authentication is described in  [RFC 6238](https://tools.ietf.org
 As part of the authorization process there is the option on the part of the server to allow a “window,” checking OTP values a specified number of steps either forward or backward from the current step, to handle both network delays and possible clock skew. [RFC 6238](https://tools.ietf.org/html/rfc6238) recommends checking one step backward to accommodate any network delay and provides no specific guidance on a window for a clock skew other than to recommend this window remain small. There will be a small window, likely one step backward and forward, but this value may change over time based on security and operational considerations.
 
 ### Two-factor authentication flows
-The ACVTS server has a dedicated RESTful entry point for client authentication: https://demo.acvts.nist.gov/acvp/validation/acvp/login. The corresponding two-factor authentication flow is shown in the figure below. Note that the successful first-factor authentication is a prerequisite for performing the second factor authentication with TOTP. Note also that this workflow utilizes two protocols: Transmission Control Protocol and Internet Protocol (TCP/IP) and Hypertext Transfer Protocol Secure (HTTPS). ![Authentication flows](https://github.com/usnistgov/ACVP/blob/master/Images/2-factor-auth-proxy-server.svg). 
+The ACVTS server has a dedicated RESTful entry point for client authentication: https://demo.acvts.nist.gov/acvp/v1/login. The corresponding two-factor authentication flow is shown in the figure below. Note that the successful first-factor authentication is a prerequisite for performing the second factor authentication with TOTP. Note also that this workflow utilizes two protocols: Transmission Control Protocol and Internet Protocol (TCP/IP) and Hypertext Transfer Protocol Secure (HTTPS). ![Authentication flows](https://github.com/usnistgov/ACVP/blob/master/Images/2-factor-auth-proxy-server.svg). 
 
 The NIST ACVTS server links a client ID to a successful first-factor authentication upon completing the two-way TLS handshake for the just established session with the client ID corresponding to the client certificate used in the handshake. The NIST ACVTS server and the NIST TOTP server maintain a database with client ID’s which must be synchronized for proper operation of the second-factor authentication. The NIST TOTP server uses the client ID to find the shared secret K corresponding to that ID. The NIST TOTP server then computes an OTP using the algorithm from  [RFC 6238](https://tools.ietf.org/html/rfc6238). The NIST TOTP server next compares the computed OTP with the supplied client OTP value. If the two match, within a server defined window, the client is authenticated, otherwise the authentication attempt is rejected. Correspondingly, the ACVTS server creates an Authorization JSON Web Token (JWT) and returns it to the client upon success.
 
@@ -50,7 +50,7 @@ The workflow authorization flows are shown in the figure below. ![Authorization 
 
 Note that all HTTP requests listed are over TLS. Note also that to re-authenticate in this context when the JWT is expired the client needs to submit only the new OTP value using the TLS session previously established. In other words, the client would need to perform only the actions shown in section "Two-factor authentication flows" above that correspond to the second factor authentication and reuse the 2-way TLS session as a first factor authentication as long as the TLS session is active. The basic process flows as follows. 
 
-1. POST the following to **/validation/acvp/login** <br/>
+1. POST the following to **/acvp/v1/login** <br/>
 ```
 [
    {"acvVersion": "0.x"},
@@ -66,7 +66,7 @@ Note: That the “password” value is a string and the one-time password could 
    {"accessToken": "<ACCESS TOKEN>"}
 ]
 ```
-3. POST the registration to **/validation/acvp/register** with the following in the header: 
+3. POST the registration to **/acvp/v1/register** with the following in the header: 
 Authorization: Bearer `<accessToken>`
 
 4.  Receive the response
@@ -78,24 +78,24 @@ Authorization: Bearer `<accessToken>`
     "accessToken": "<ACCESS TOKEN>"}
 ]
 ```
-NOTE: The access token will be different than one the received from **/validation/acvp/login**, and should be used for all the subsequent requests for this test session. 
+NOTE: The access token will be different than one the received from **/acvp/v1/login**, and should be used for all the subsequent requests for this test session. 
 
-5.  GET **/validation/acvp/vectors?vsId=`<VECTOR SET ID>`** with following in the header
+5.  GET **/acvp/v1/vectors?vsId=`<VECTOR SET ID>`** with following in the header
 Authorization: Bearer `<accessToken>`
 
 6. Receive the vector set 
 
-7. POST the answers to **/validation/acvp/vectors?vsId=`<VECTOR SET ID>`** with following in the header
+7. POST the answers to **/acvp/v1/vectors?vsId=`<VECTOR SET ID>`** with following in the header
 Authorization: Bearer `<accessToken>`
 
-8. GET **/validation/acvp/results?vsId=`<VECTOR SET ID>`** with following in the header
+8. GET **/acvp/v1/results?vsId=`<VECTOR SET ID>`** with following in the header
 Authorization: Bearer `<accessToken>`
 
 9. Receive the results for the vector set
 
-The access tokens received from either the **/validation/acvp/login** endpoint or the **/validation/acvp/register** endpoint are set to expire after a pre-defined period, and will result in a “401 Unauthorized” HTTP status code when used outside of this window. The following process will allow the client to refresh the token. 
+The access tokens received from either the **/acvp/v1/login** endpoint or the **/acvp/v1/register** endpoint are set to expire after a pre-defined period, and will result in a “401 Unauthorized” HTTP status code when used outside of this window. The following process will allow the client to refresh the token. 
 
-1. POST the following to **/validation/acvp/login**
+1. POST the following to **/acvp/v1/login**
 ```
 [
    {"acvVersion": "0.x"},
